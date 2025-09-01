@@ -1,0 +1,156 @@
+openapi: 3.0.3
+info:
+  title: Semana 3 - CRUD de Produtos
+  version: "1.0.0"
+  description: API RESTful para gerenciar produtos (exemplo de aula - Semana 3)
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/produtos:
+    get:
+      summary: Lista produtos
+      responses:
+        '200':
+          description: Lista de produtos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produto'
+    post:
+      summary: Cria produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProdutoCreate'
+      responses:
+        '201':
+          description: Criado
+          headers:
+            Location:
+              description: URI do recurso criado
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '422':
+          description: Erro de validação
+  /api/produtos/{id}:
+    get:
+      summary: Detalha um produto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '404':
+          description: Não encontrado
+    put:
+      summary: Atualiza um produto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProdutoUpdate'
+      responses:
+        '200':
+          description: Atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '204':
+          description: Atualizado (sem conteúdo)
+        '404':
+          description: Não encontrado
+        '422':
+          description: Erro de validação
+    delete:
+      summary: Remove um produto
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Removido
+        '404':
+          description: Não encontrado
+components:
+  schemas:
+    Produto:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        descricao:
+          type: string
+          nullable: true
+        preco:
+          type: number
+          format: float
+        estoque:
+          type: integer
+        ativo:
+          type: boolean
+        criado_em:
+          type: string
+          format: date-time
+        atualizado_em:
+          type: string
+          format: date-time
+    ProdutoCreate:
+      type: object
+      required: [nome, preco, estoque, ativo]
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+          nullable: true
+        preco:
+          type: number
+          format: float
+        estoque:
+          type: integer
+        ativo:
+          type: boolean
+    ProdutoUpdate:
+      type: object
+      properties:
+        nome:
+          type: string
+        descricao:
+          type: string
+          nullable: true
+        preco:
+          type: number
+          format: float
+        estoque:
+          type: integer
+        ativo:
+          type: boolean
